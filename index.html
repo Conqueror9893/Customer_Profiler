@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Profiler</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📄 Customer Profiler</h1>
+        
+        <!-- Step 1: Document Verification -->
+        <section id="document-verification">
+            <h2>Step 1: Document Verification</h2>
+            <div id="verification-status"></div>
+            <button id="verify-docs" onclick="verifyDocuments()">Verify Documents</button>
+        </section>
+
+        <!-- Step 2: Extract and Display ID Details -->
+        <section id="customer-info" style="display:none;">
+            <h2>Step 2: Customer Identification</h2>
+            <div id="customer-details"></div>
+            <button onclick="matchCustomerDetails()">Match Across Documents</button>
+        </section>
+
+        <!-- Step 3: Display Verification Results -->
+        <section id="document-matching" style="display:none;">
+            <h2>Step 3: Document Cross Verification</h2>
+            <div id="matching-results"></div>
+            <button onclick="generateCustomerProfile()">Generate Customer Profile</button>
+        </section>
+
+        <!-- Step 4: Final Customer Profile -->
+        <section id="final-profile" style="display:none;">
+            <h2>Final Customer Profile</h2>
+            <div id="profile-summary"></div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

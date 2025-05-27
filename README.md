@@ -1,2 +1,1 @@
-# Customer_Profiler
-
+streamlit run app.py
