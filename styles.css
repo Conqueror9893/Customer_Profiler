@@ -35,3 +35,55 @@ section {
     background-color: #fff;
     border-radius: 5px;
 }
+
+.profile-summary-badges {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    justify-content: center;
+}
+.badge {
+    background: linear-gradient(90deg, #2b7a78 60%, #3ed6cb 100%);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(43,122,120,0.08);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.profile-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(43,122,120,0.08);
+    padding: 24px;
+    margin-bottom: 18px;
+    text-align: left;
+}
+.profile-card h4 {
+    margin-top: 0;
+    color: #2b7a78;
+}
+.profile-section {
+    margin-bottom: 12px;
+}
+.query-form-modern input {
+    border-radius: 8px;
+    border: 1px solid #2b7a78;
+    padding: 10px;
+    width: 100%;
+    font-size: 16px;
+}
+.query-form-modern button {
+    background: linear-gradient(90deg, #2b7a78 60%, #3ed6cb 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 8px;
+    cursor: pointer;
+}

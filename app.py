@@ -7,6 +7,7 @@ import fitz
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import datetime
+import re
 from generate_embeddings import (
     extract_text, 
     summarize_sale_deed, 
@@ -410,68 +411,126 @@ if st.session_state.step == 4:
 
 # **Step 5: Generate Final Customer Profile**
 if st.session_state.step == 5:
+    st.markdown("""
+        <style>
+        .profile-summary-badges {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .badge {
+            background: linear-gradient(90deg, #2b7a78 60%, #3ed6cb 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(43,122,120,0.08);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .profile-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(43,122,120,0.08);
+            padding: 24px;
+            margin-bottom: 18px;
+            text-align: left;
+        }
+        .profile-card h4 {
+            margin-top: 0;
+            color: #2b7a78;
+        }
+        .profile-section {
+            margin-bottom: 12px;
+        }
+        .query-form-modern input {
+            border-radius: 8px;
+            border: 1px solid #2b7a78;
+            padding: 10px;
+            width: 100%;
+            font-size: 16px;
+        }
+        .query-form-modern button {
+            background: linear-gradient(90deg, #2b7a78 60%, #3ed6cb 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 8px;
+            cursor: pointer;
+        }
+        </style>
+    """, unsafe_allow_html=True)
     st.subheader("📊 Comprehensive Customer Profile")
 
-    # ✅ Retrieve stored customer profile (avoid regenerating)
     customer_profile = st.session_state.get("customer_profile", {})
 
     if not customer_profile:
         st.error("❌ No document summaries found. Please restart the process.")
     else:
         if "final_profile" not in st.session_state:
-            # ✅ Generate RM-friendly profile only if not already generated
             profile_text = json.dumps(customer_profile, indent=4)
-
             profile_prompt = f"""
-            You are a **Relationship Manager (RM)** at a bank, evaluating a customer’s profile based on key financial and identification documents. 
-
+            You are a **Relationship Manager (RM)** at a bank, evaluating a customer's profile based on key financial and identification documents. 
             **Documents Available:**
             - Sale Deed (Property ownership details)
             - Credit Score Report (Financial standing and risk analysis)
             - Bank Statement (Cash flow & spending habits)
-
             **Based on these, provide a structured assessment including:**
             1️⃣ **Customer Identity & Property Ownership**
             2️⃣ **Creditworthiness & Loan Eligibility**
             3️⃣ **Financial Stability & Spending Behavior**
             4️⃣ **Potential Risks & Red Flags**
             5️⃣ **Recommendations for Banking Products (Loans, Credit Cards, Investment Advice, etc.)**
-
             **Extracted Data:**
             {profile_text}
-
             **Format the output as a structured and professional RM assessment.**
             **Today's date is {datetime.datetime.today()}. Don't mention the customer's ID here or the RM name.**
             """
-
             with st.spinner("🔍 Generating AI-driven Customer Profile..."):
                 st.session_state.final_profile = run_ollama_model(profile_prompt)
 
-        # ✅ Display Final RM-Ready Profile (Loaded from session state)
-        st.subheader("📄 Final RM-Ready Customer Profile")
-        st.write(st.session_state.final_profile)
+        # --- Modern summary badges (example: you can expand logic to make these dynamic) ---
+        st.markdown('<div class="profile-summary-badges">'
+            '<div class="badge">💳 Creditworthy</div>'
+            '<div class="badge">🏠 Owns Property</div>'
+            '<div class="badge">💰 Stable Finances</div>'
+            '</div>', unsafe_allow_html=True)
 
-        # **NEW: Query the Customer Profile**
+        # --- Modern card layout for profile sections ---
+        sections = re.split(r"\n?\s*\d️⃣", st.session_state.final_profile)
+        titles = [
+            "👤 Customer Identity & Property Ownership",
+            "💳 Creditworthiness & Loan Eligibility",
+            "💰 Financial Stability & Spending Behavior",
+            "⚠️ Potential Risks & Red Flags",
+            "🧾 Recommendations for Banking Products"
+        ]
+        if len(sections) == 6:
+            for i in range(1, 6):
+                st.markdown(f'<div class="profile-card"><h4>{titles[i-1]}</h4><div class="profile-section">{sections[i].strip()}</div></div>', unsafe_allow_html=True)
+        else:
+            st.warning("⚠️ Could not parse the profile properly. Showing raw output:")
+            st.write(st.session_state.final_profile)
+
         st.markdown("---")
         st.subheader("🗂️ Query the Customer Profile")
-
-        # ✅ Query functionality inside a form to prevent full page refresh
         with st.form("query_form"):
+            st.markdown('<div class="query-form-modern">', unsafe_allow_html=True)
             user_query = st.text_input("🔍 Ask a question about this customer (e.g., 'What is their loan eligibility?')")
-
             submit_query = st.form_submit_button("🔎 Get Answer")
-
-        # ✅ Process query ONLY when form is submitted (NO RE-RUN)
+            st.markdown('</div>', unsafe_allow_html=True)
         if submit_query and user_query:
             query_prompt = f"""
             You are an AI assistant for Relationship Managers. Using the following customer profile data, answer the given question concisely.
-
             **Customer Profile:**
             {json.dumps(customer_profile, indent=4)}
-
             **Question:**
             {user_query}
-
             **Provide a clear and precise response.**
             """
             with st.spinner("Processing your query..."):
@@ -481,17 +540,16 @@ if st.session_state.step == 5:
         elif submit_query:
             st.warning("⚠️ Please enter a question to get an answer.")
 
-        # **Navigation Buttons**
         col1, col2 = st.columns(2)
         with col1:
             if st.button("⬅️ Back"):
-                st.session_state.step = 4  # Go back to Summarize Documents
+                st.session_state.step = 4
                 st.rerun()
         with col2:
             if st.button("🔄 Restart"):
                 st.session_state.step = 1
                 st.session_state.uploaded_files = {}
                 st.session_state.customer_profile = {}
-                st.session_state.final_profile = None  # Clear stored profile
+                st.session_state.final_profile = None
                 st.rerun()
 

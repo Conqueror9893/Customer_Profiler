@@ -314,7 +314,7 @@ def analyze_bank_statement(csv_file_path, time_range="total",  return_dataframe=
         estimated_savings = total_salary - total_expenditure
 
         # Identify potential investments (keywords: MF, STOCK, BOND, FD, etc.)
-        investment_df = df_filtered[df_filtered["TXN_DESC"].str.contains("MF|STOCK|BOND|FD|ETF|MUTUAL FUND", case=False, na=False)]
+        investment_df = df_filtered[df_filtered["TXN_DESC"].str.contains("MF|STOCK|BOND|FD|ETF|MUTUAL FUND|INVESTMENT", case=False, na=False)]
         total_investments = investment_df["TXN_AMOUNT_LCY"].sum()
 
         # Generate summary output
