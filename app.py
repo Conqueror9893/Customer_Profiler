@@ -55,7 +55,6 @@ if st.session_state.step == 0:
                 }
             </style>
             <div class="flash-screen">Customer Profiler
-                <span class="subtext">Powered by I-exceed</span>
             </div>
             """,
             unsafe_allow_html=True
