@@ -3,4 +3,4 @@
 /Documents
 /temp
 /scrap_code
-/customer_profiler_frontend/node_modules
+**/node_modules
